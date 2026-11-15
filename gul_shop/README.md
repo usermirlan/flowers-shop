@@ -65,3 +65,17 @@ python manage.py runserver
 7. **Reload**.
 
 Эскертүү: PythonAnywhere'дин акысыз планында бир гана сайт (web app) болот.
+## Render'ге коюу
+
+Керектүү 2 акысыз кызмат:
+1. **Neon** (neon.tech) — PostgreSQL. Долбоор ачып, `postgresql://...` шилтемесин көчүрүңүз.
+2. **Cloudinary** (cloudinary.com) — сүрөт жана музыка. Dashboard'дон `CLOUDINARY_URL` (`cloudinary://...`) көчүрүңүз.
+
+Render'де: **New → Blueprint** → GitHub репону тандаңыз (`render.yaml` өзү окулат).
+Сурала турган маанилер:
+- `DATABASE_URL` — Neon шилтемеси
+- `CLOUDINARY_URL` — Cloudinary шилтемеси
+- `ADMIN_USERNAME`, `ADMIN_PASSWORD` — ээсинин логини/паролу (күчтүү пароль коюңуз)
+
+Deploy бүткөндө: `https://<аты>.onrender.com/owner/` → ошол логин менен кириңиз.
+Биринчи deploy учурунда 10 демо гүл өзү кошулат.
