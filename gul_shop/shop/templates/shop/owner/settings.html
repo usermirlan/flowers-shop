@@ -1,0 +1,31 @@
+{% extends "shop/owner/base.html" %}
+{% block title %}Жөндөөлөр{% endblock %}
+{% block content %}
+<div class="top"><div><h1>Жөндөөлөр</h1><p>Бул маалымат сайтта көрүнөт</p></div></div>
+<form class="form" method="post">{% csrf_token %}
+  <div class="fs"><h3>Дүкөн</h3><div class="grid2">
+    {% include "shop/owner/_field.html" with f=form.name %}
+    <div></div>
+    {% include "shop/owner/_field.html" with f=form.tagline_ky %}
+    {% include "shop/owner/_field.html" with f=form.tagline_ru %}
+  </div></div>
+  <div class="fs"><h3>Байланыш</h3><div class="grid2">
+    {% include "shop/owner/_field.html" with f=form.whatsapp %}
+    {% include "shop/owner/_field.html" with f=form.phone %}
+    {% include "shop/owner/_field.html" with f=form.instagram %}
+    {% include "shop/owner/_field.html" with f=form.address %}
+    {% include "shop/owner/_field.html" with f=form.hours %}
+    {% include "shop/owner/_field.html" with f=form.map_url %}
+  </div></div>
+  <div class="fs"><h3>Жеткирүү</h3><div class="grid2">
+    {% include "shop/owner/_field.html" with f=form.delivery_fee %}
+    {% include "shop/owner/_field.html" with f=form.free_delivery_from %}
+  </div></div>
+  <div class="fs"><h3>Акция таймери</h3><div class="grid2">
+    {% include "shop/owner/_field.html" with f=form.promo_title_ky %}
+    {% include "shop/owner/_field.html" with f=form.promo_title_ru %}
+    {% include "shop/owner/_field.html" with f=form.promo_date %}
+  </div></div>
+  <div><button class="btn btn-p" type="submit">Сактоо</button></div>
+</form>
+{% endblock %}

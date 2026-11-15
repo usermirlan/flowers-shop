@@ -1,0 +1,45 @@
+{% extends "shop/owner/base.html" %}
+{% load fmt %}
+{% block title %}Буйрутмалар{% endblock %}
+{% block content %}
+<div class="top"><div><h1>Буйрутмалар</h1><p>Абалын бир баскыч менен өзгөртүңүз</p></div></div>
+<div class="tabs">
+  <a href="?s=active" class="{% if st == 'active' %}on{% endif %}">Активдүү</a>
+  {% for k, v in statuses %}<a href="?s={{ k }}" class="{% if st == k %}on{% endif %}">{{ v }}</a>{% endfor %}
+  <a href="?s=all" class="{% if st == 'all' %}on{% endif %}">Баары</a>
+</div>
+<div class="orders">
+{% for o in orders %}
+  <div class="ord {% if o.status == 'new' %}is-new{% endif %}">
+    <div>
+      <h4>№{{ o.pk }} <span class="st st-{{ o.status }}">{{ o.get_status_display }}</span></h4>
+      <div class="meta">Түштү: {{ o.created|date:"d.m.Y H:i" }}</div>
+      <ul>{% for it in o.items.all %}<li>• {{ it.name }} × {{ it.qty }} — {{ it.line_total|som }} сом</li>{% endfor %}</ul>
+      <div class="info">
+        <span>Качан:</span><span><b>{{ o.date|date:"d.m.Y" }}</b>, {{ o.time_slot }}</span>
+        <span>Түрү:</span><span>{% if o.delivery %}Жеткирүү{% else %}Өзү келип алат{% endif %}</span>
+        {% if o.address %}<span>Дарек:</span><span>{{ o.address }}</span>{% endif %}
+        {% if o.recipient %}<span>Алуучу:</span><span>{{ o.recipient }}</span>{% endif %}
+        <span>Телефон:</span><span>{{ o.phone }}</span>
+        {% if o.card_text %}<span>Открытка:</span><span>«{{ o.card_text }}»</span>{% endif %}
+      </div>
+    </div>
+    <div class="right">
+      <div class="sum">{{ o.total|som }} сом</div>
+      {% if o.delivery_fee %}<div class="meta">анын ичинде жеткирүү {{ o.delivery_fee|som }} сом</div>{% endif %}
+      <a class="wa" href="https://wa.me/{{ o.phone|cut:' '|cut:'+'|cut:'-'|cut:'('|cut:')' }}" target="_blank" rel="noopener">💬 Кардарга жазуу</a>
+      <form method="post" action="{% url 'owner_order_status' o.pk %}">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% if o.status == 'new' %}<button class="sbtn go" name="status" value="confirmed">✓ Ырастоо</button>{% endif %}
+        {% if o.status == 'confirmed' %}<button class="sbtn go" name="status" value="delivering">🚗 Жолго чыкты</button>{% endif %}
+        {% if o.status == 'delivering' or o.status == 'confirmed' %}<button class="sbtn go" name="status" value="done">✓ Аткарылды</button>{% endif %}
+        {% if o.status != 'cancelled' and o.status != 'done' %}<button class="sbtn" name="status" value="cancelled">Жокко чыгаруу</button>{% endif %}
+        {% if o.status == 'cancelled' or o.status == 'done' %}<button class="sbtn" name="status" value="new">Кайра ачуу</button>{% endif %}
+      </form>
+    </div>
+  </div>
+{% empty %}
+  <div class="box"><div class="empty">Бул бөлүмдө буйрутма жок 🌷</div></div>
+{% endfor %}
+</div>
+{% endblock %}

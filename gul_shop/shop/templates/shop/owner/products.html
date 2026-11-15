@@ -1,0 +1,40 @@
+{% extends "shop/owner/base.html" %}
+{% load fmt %}
+{% load static %}
+{% block title %}Товарлар{% endblock %}
+{% block content %}
+<div class="top">
+  <div><h1>Товарлар</h1><p>Баасын ушул жерден эле өзгөртүп, «✓» басыңыз</p></div>
+  <a class="btn btn-r" href="{% url 'owner_product_add' %}">＋ Жаңы товар</a>
+</div>
+<div class="prods">
+{% for p in products %}
+  <div class="pc {% if not p.is_active %}off{% endif %}">
+    <div class="im">
+      {% if p.image %}<img src="{{ p.image.url }}" alt="">{% else %}<span class="art" data-t="{{ p.art }}" data-c="{{ p.art_colors }}" data-id="{{ p.id }}"></span>{% endif %}
+      {% if not p.is_active %}<span class="tag">Жашырылган</span>{% elif p.badge %}<span class="tag">{{ p.get_badge_display }}</span>{% endif %}
+    </div>
+    <div class="bd">
+      <div><h4>{{ p.name_ky }}</h4><div class="cat">{{ p.category }}</div></div>
+      <form class="row" method="post" action="{% url 'owner_product_price' p.pk %}">{% csrf_token %}
+        <input type="number" name="price" value="{{ p.price }}" min="0" aria-label="Баасы"><span style="font-size:13px;color:var(--muted)">сом</span>
+        <button class="sbtn go" type="submit">✓</button>
+      </form>
+      <div class="acts">
+        <a class="btn btn-g" href="{% url 'owner_product_edit' p.pk %}">✎ Өзгөртүү</a>
+        <form method="post" action="{% url 'owner_product_toggle' p.pk %}" style="flex:1;display:flex">{% csrf_token %}
+          <button class="btn btn-g" style="flex:1;justify-content:center" type="submit">{% if p.is_active %}Жашыруу{% else %}Көрсөтүү{% endif %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% empty %}<div class="box"><div class="empty">Товар жок. «Жаңы товар» баскычын басыңыз.</div></div>{% endfor %}
+</div>
+<script src="{% static 'shop/art.js' %}"></script>
+<script>
+document.querySelectorAll(".art").forEach(el=>{
+  const c=el.dataset.c.split(",").map(s=>s.trim()).filter(Boolean);
+  el.outerHTML=bouquet({t:el.dataset.t,c:c,n:el.dataset.t==="peony"?7:11,wrap:"#efe6da"},+el.dataset.id*7);
+});
+</script>
+{% endblock %}

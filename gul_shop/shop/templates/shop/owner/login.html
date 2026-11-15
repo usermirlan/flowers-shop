@@ -1,0 +1,29 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ky">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Кирүү — {{ shop.name }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'shop/owner.css' %}">
+</head>
+<body>
+<div class="login">
+  <form class="card form" method="post">
+    {% csrf_token %}
+    <div style="font-size:36px">🌷</div>
+    <div>
+      <h1>{{ shop.name }}</h1>
+      <p>Дүкөндү башкаруу панелине кирүү</p>
+    </div>
+    {% if form.errors %}<div class="msg error">Логин же сырсөз туура эмес</div>{% endif %}
+    <div class="fld"><label for="id_username">Логин</label><input class="inp" name="username" id="id_username" autocomplete="username" required autofocus></div>
+    <div class="fld"><label for="id_password">Сырсөз</label><input class="inp" type="password" name="password" id="id_password" autocomplete="current-password" required></div>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn-p" type="submit">Кирүү</button>
+    <a href="/" style="text-align:center;font-size:13px;color:var(--muted)">← Сайтка кайтуу</a>
+  </form>
+</div>
+</body>
+</html>

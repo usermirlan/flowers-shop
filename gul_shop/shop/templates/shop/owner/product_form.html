@@ -1,0 +1,38 @@
+{% extends "shop/owner/base.html" %}
+{% block title %}{% if p %}{{ p.name_ky }}{% else %}Жаңы товар{% endif %}{% endblock %}
+{% block content %}
+<div class="top">
+  <div><h1>{% if p %}{{ p.name_ky }}{% else %}Жаңы товар{% endif %}</h1><p><a href="{% url 'owner_products' %}">← Товарлар</a></p></div>
+</div>
+<form class="form" method="post" enctype="multipart/form-data">{% csrf_token %}
+  <div class="fs">
+    <h3>Негизги</h3>
+    <div class="grid2">
+      {% include "shop/owner/_field.html" with f=form.name_ky %}
+      {% include "shop/owner/_field.html" with f=form.name_ru %}
+      {% include "shop/owner/_field.html" with f=form.desc_ky %}
+      {% include "shop/owner/_field.html" with f=form.desc_ru %}
+      {% include "shop/owner/_field.html" with f=form.category %}
+      {% include "shop/owner/_field.html" with f=form.price %}
+      {% include "shop/owner/_field.html" with f=form.badge %}
+      {% include "shop/owner/_field.html" with f=form.order %}
+    </div>
+    <label style="display:flex;gap:10px;align-items:center;margin-top:14px;font-weight:600">{{ form.is_active }} Сайтта көрүнөт</label>
+  </div>
+  <div class="fs">
+    <h3>Сүрөт</h3>
+    {% if p and p.image %}<img class="preview" src="{{ p.image.url }}" alt="" style="margin-bottom:12px">{% endif %}
+    {% include "shop/owner/_field.html" with f=form.image %}
+    <details style="margin-top:12px"><summary style="cursor:pointer;color:var(--muted);font-size:14px">Сүрөт жок болгондо тартылган гүл</summary>
+      <div class="grid2" style="margin-top:12px">
+        {% include "shop/owner/_field.html" with f=form.art %}
+        {% include "shop/owner/_field.html" with f=form.art_colors %}
+      </div>
+    </details>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button class="btn btn-p" type="submit">Сактоо</button>
+    <a class="btn btn-g" href="{% url 'owner_products' %}">Жокко чыгаруу</a>
+  </div>
+</form>
+{% endblock %}

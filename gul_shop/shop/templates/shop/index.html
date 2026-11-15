@@ -1,0 +1,110 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ shop.name }} — цветы в Оше</title>
+<meta name="description" content="{{ shop.name }}: букеты и цветы с доставкой по Ошу. Заказ онлайн через WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'shop/style.css' %}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2712%27 r=%277%27 fill=%27%23d4577a%27/%3E%3Cpath d=%27M16 18v11%27 stroke=%27%2323372b%27 stroke-width=%273%27/%3E%3C/svg%3E">
+</head>
+<body>
+{% csrf_token %}
+<header>
+  <div class="wrap nav">
+    <div class="logo">
+      <svg viewBox="0 0 32 32"><circle cx="16" cy="12" r="6" fill="#d4577a"/><circle cx="11" cy="15" r="5" fill="#e88aa3"/><circle cx="21" cy="15" r="5" fill="#e88aa3"/><path d="M16 18v11" stroke="#23372b" stroke-width="2"/><path d="M16 24c-3-1-5-3-6-6" stroke="#23372b" stroke-width="2" fill="none"/></svg>
+      <span>{{ shop.name }}</span>
+    </div>
+    <div class="nav-r">
+      <div class="lang"><button data-l="ru" class="on">RU</button><button data-l="ky">KG</button></div>
+      <button class="cart-btn" id="openCart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 016 0"/></svg>
+        <span class="lbl" data-t="cart"></span><span class="n" id="cartN">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1 id="tagline"></h1>
+      <p data-t="sub"></p>
+      <div class="hero-cta">
+        <button class="btn btn-p" id="toCat" data-t="toCat"></button>
+        <button class="btn btn-s" id="toHow" data-t="howBtn"></button>
+      </div>
+      <div class="perks">
+        <span><i></i><b data-t="p1"></b></span>
+        <span><i></i><b id="perkFree"></b></span>
+        <span><i></i><b data-t="p3"></b></span>
+      </div>
+    </div>
+    <div class="hero-art" id="heroArt"></div>
+  </section>
+
+  {% if shop.promo_date %}
+  <section class="promo">
+    <div>
+      <h3 id="promoTitle"></h3>
+      <p data-t="promoS"></p>
+    </div>
+    <div class="count" id="count"></div>
+  </section>
+  {% endif %}
+
+  <section id="catalog">
+    <div class="sec-h"><h2 data-t="catT"></h2></div>
+    <div class="chips" id="chips"></div>
+    <div style="height:14px"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="how" id="how">
+    <h2 data-t="howT"></h2>
+    <div class="steps">
+      <div class="step"><b>1</b><h5 data-t="s1t"></h5><p data-t="s1p"></p></div>
+      <div class="step"><b>2</b><h5 data-t="s2t"></h5><p data-t="s2p"></p></div>
+      <div class="step"><b>3</b><h5 data-t="s3t"></h5><p data-t="s3p"></p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="logo" style="font-size:24px">{{ shop.name }}</div>
+      <div>{{ shop.address }}{% if shop.hours %} · {{ shop.hours }}{% endif %}</div>
+    </div>
+    <div class="contacts">
+      {% if shop.phone %}<div>☎ <a href="tel:{{ shop.phone }}">{{ shop.phone }}</a></div>{% endif %}
+      <div>WhatsApp: <a href="https://wa.me/{{ shop.wa_digits }}" target="_blank" rel="noopener">+{{ shop.wa_digits }}</a></div>
+      {% if shop.instagram %}<div>Instagram: <a href="https://instagram.com/{{ shop.instagram }}" target="_blank" rel="noopener">@{{ shop.instagram }}</a></div>{% endif %}
+      {% if shop.map_url %}<div><a href="{{ shop.map_url }}" target="_blank" rel="noopener">2GIS</a></div>{% endif %}
+      <div style="margin-top:10px;opacity:.6;font-size:12px"><a href="{% url 'owner_dash' %}">🔒 Дүкөн ээси үчүн</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="ov" id="ov"></div>
+<aside class="drawer" id="drawer" aria-label="cart">
+  <div class="dr-h"><h3 data-t="cartT"></h3><button class="x" id="closeCart">✕</button></div>
+  <div class="dr-b" id="drBody"></div>
+  <div class="dr-f" id="drFoot"></div>
+</aside>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+<div class="toast" id="toast"></div>
+
+{{ products_json|json_script:"products-data" }}
+{{ cats_json|json_script:"cats-data" }}
+{{ slots_json|json_script:"slots-data" }}
+<script id="shop-data" type="application/json">{"fee": {{ shop.delivery_fee }}, "free": {{ shop.free_delivery_from }}, "promo": "{{ shop.promo_date|date:'Y-m-d' }}"}</script>
+{{ shop.tagline_ru|json_script:"tag-ru" }}{{ shop.tagline_ky|json_script:"tag-ky" }}
+{{ shop.promo_title_ru|json_script:"promo-ru" }}{{ shop.promo_title_ky|json_script:"promo-ky" }}
+<script src="{% static 'shop/art.js' %}"></script>
+<script src="{% static 'shop/app.js' %}"></script>
+</body>
+</html>

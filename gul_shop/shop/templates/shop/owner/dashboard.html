@@ -1,0 +1,40 @@
+{% extends "shop/owner/base.html" %}
+{% load fmt %}
+{% block title %}Башкы бет{% endblock %}
+{% block content %}
+<div class="top">
+  <div><h1>Саламатсызбы!</h1><p>{% now "d.m.Y" %} · дүкөндүн бүгүнкү абалы</p></div>
+  <a class="btn btn-r" href="{% url 'owner_product_add' %}">＋ Жаңы товар</a>
+</div>
+<div class="stats">
+  <a class="stat hl" href="{% url 'owner_orders' %}?s=new"><small>Жаңы буйрутмалар</small><b>{{ new_orders }}</b></a>
+  <div class="stat"><small>Бүгүн буйрутма</small><b>{{ today_n }}</b></div>
+  <div class="stat"><small>Бүгүнкү киреше</small><b>{{ today_sum|som }} с</b></div>
+  <div class="stat"><small>7 күндө киреше</small><b>{{ week_sum|som }} с</b></div>
+</div>
+<div class="cols">
+  <div class="box">
+    <h3>Акыркы 7 күн (сом) <span style="font-size:13px;color:var(--muted);font-weight:500">{{ week_n }} буйрутма</span></h3>
+    <div class="chart">
+      {% for d in days %}<div class="bar" title="{{ d.n }} буйрутма"><em>{% if d.s %}{{ d.s|som }}{% endif %}</em><i style="height:{{ d.h }}%"></i><span>{{ d.label }}</span></div>{% endfor %}
+    </div>
+  </div>
+  <div class="box">
+    <h3>Жакында жеткирүү <a href="{% url 'owner_orders' %}">Баары →</a></h3>
+    <div class="list">
+      {% for o in upcoming %}
+        <div class="li"><div class="dt">{{ o.date|date:"d.m" }}<br><span style="font-weight:500;color:var(--muted)">{{ o.time_slot }}</span></div>
+          <div class="gr">№{{ o.pk }} · {{ o.total|som }} сом<small>{% if o.delivery %}{{ o.address }}{% else %}Өзү алат{% endif %}</small></div>
+          <span class="st st-{{ o.status }}">{{ o.get_status_display }}</span></div>
+      {% empty %}<div class="empty">Азырынча буйрутма жок</div>{% endfor %}
+    </div>
+  </div>
+</div>
+<div class="box" style="margin-top:16px">
+  <h3>30 күндө эң көп сатылгандар</h3>
+  <div class="list">
+    {% for p in top %}<div class="li"><div class="gr">{{ p.name_ky }}</div><b>{{ p.sold }} даана</b></div>
+    {% empty %}<div class="empty">Сатуулар азырынча жок</div>{% endfor %}
+  </div>
+</div>
+{% endblock %}
